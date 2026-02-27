@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>Admin — GOLDEN TRAFF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-card: rgba(22, 22, 22, 0.72);
+      --gold: #d4af37;
+      --gold-dim: #b8860b;
+      --gold-glow: rgba(212, 175, 55, 0.25);
+      --glass: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --text: #f5f5f5;
+      --text-muted: rgba(255, 255, 255, 0.55);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      position: relative;
+      transition: transform 0.05s ease;
+    }
+
+    /* ========== MAIN APP ========== */
+    #app {
+      min-height: 100dvh;
+      background: var(--bg-dark);
+      opacity: 1;
+    }
+
+    .sunrise-bg {
+      position: fixed;
+      inset: 0;
+      background: url('https://sun9-36.userapi.com/s/v1/ig2/QbzKl6EeocvMgRIIMlqihPBN8Qe72T9Kym8WJTL4zR0UyXNVwwvvO1bzTSEAQ5gUX1PBl_6lH25pssomaBBX8OmC.jpg?quality=95&as=32x69,48x104,72x156,108x234,160x347,240x521,360x781,480x1041,540x1172,590x1280&from=bu&cs=590x0') center/cover no-repeat;
+      opacity: 0.22;
+      z-index: 0;
+    }
+
+    .app-content {
+      position: relative;
+      z-index: 1;
+      padding: calc(var(--safe-top) + 8px) 16px calc(var(--safe-bottom) + 16px);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Dynamic Island */
+    .dynamic-island {
+      display: flex;
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 28px;
+      padding: 6px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dynamic-island .slider {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      width: calc(50% - 6px);
+      height: calc(100% - 12px);
+      background: linear-gradient(135deg, var(--glass) 0%, rgba(212, 175, 55, 0.12) 100%);
+      border-radius: 22px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 0;
+    }
+
+    .dynamic-island .slider.to-right {
+      transform: translateX(100%);
+    }
+
+    .tab-btn {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      padding: 12px 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: color 0.3s ease, transform 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab-btn:active {
+      transform: scale(0.95);
+    }
+
+    .tab-btn.active {
+      color: var(--gold);
+    }
+
+    /* GOLDEN TRAFF label */
+    .golden-label {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .golden-label span {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      opacity: 0.85;
+    }
+
+    /* ========== SUM SCREEN ========== */
+    .screen {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .sum-hero {
+      text-align: center;
+      padding: 24px 0 20px;
+    }
+
+    .sum-hero .value {
+      font-size: clamp(42px, 12vw, 56px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #fff 0%, var(--gold) 50%, var(--gold-dim) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 40px var(--gold-glow);
+    }
+
+    .sum-hero .currency {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Subcategories — liquid glass */
+    .sub-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .sub-tab {
+      padding: 10px 16px;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease, transform 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sub-tab:active {
+      transform: scale(0.95);
+    }
+
+    .sub-tab:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+
+    .sub-tab.active {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: rgba(212, 175, 55, 0.35);
+      color: var(--gold);
+    }
+
+    /* Analytics / trend card */
+    .analytics-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+
+    .analytics-card h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .trend-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px;
+    }
+
+    .trend-row:last-child {
+      border-bottom: none;
+    }
+
+    .trend-label {
+      color: var(--text-muted);
+    }
+
+    .trend-value {
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    /* ========== DEALS SCREEN ========== */
+    .deals-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .deal-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .deal-card:active {
+      transform: scale(0.98);
+    }
+
+    .deal-status-indicator {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-card);
+    }
+
+    .deal-status-indicator.success {
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold-glow);
+    }
+
+    .deal-status-indicator.failed {
+      background: #f87171;
+      box-shadow: 0 0 8px rgba(248, 113, 113, 0.4);
+    }
+
+    .deal-user {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .deal-user span {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 13px;
+    }
+
+    .deal-sum {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: -0.02em;
+    }
+
+    /* Add deal button — prominent */
+    .add-deal-btn {
+      width: 100%;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(184, 134, 11, 0.2) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 20px;
+      color: var(--gold);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s ease, transform 0.1s ease;
+      box-shadow: 0 0 24px var(--gold-glow);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .add-deal-btn:hover {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.35) 0%, rgba(184, 134, 11, 0.28) 100%);
+      border-color: rgba(212, 175, 55, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .add-deal-btn:active {
+      transform: scale(0.98);
+    }
+
+    .add-deal-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Communication menu */
+    .communication-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: max-height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    .communication-menu.expanded {
+      max-height: 500px;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .communication-item {
+      width: 100%;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 18px;
+      color: var(--gold);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s ease, transform 0.1s ease;
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.15);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .communication-item:hover {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 134, 11, 0.22) 100%);
+      border-color: rgba(212, 175, 55, 0.5);
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    }
+
+    .communication-item:active {
+      transform: scale(0.98);
+    }
+
+    .communication-item svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .communication-item {
+      position: relative;
+    }
+
+    .add-deal-btn {
+      position: relative;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 10px;
+      height: 10px;
+      background: #f87171;
+      border-radius: 50%;
+      border: 2px solid var(--bg-card);
+      box-shadow: 0 0 8px rgba(248, 113, 113, 0.6);
+      animation: pulse-notification 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-notification {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    /* ========== POPUP ADD DEAL ========== */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 16px var(--safe-bottom) 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .popup-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px calc(var(--safe-bottom) + 24px);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .popup-overlay.visible .popup {
+      transform: translateY(0);
+    }
+
+    .popup h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .popup input, .popup textarea {
+      width: 100%;
+      padding: 16px 18px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      color: var(--text);
+      font-size: 16px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s ease;
+      font-family: inherit;
+    }
+
+    .popup textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .popup input::placeholder, .popup textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .popup input:focus, .popup textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+    }
+
+    .popup-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .popup-actions button {
+      flex: 1;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease, transform 0.1s ease;
+      border: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .popup-actions button:active {
+      transform: scale(0.95);
+    }
+
+    .popup-cancel {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+    }
+
+    .popup-submit {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+      color: #0a0a0a;
+    }
+
+    .popup-submit:hover {
+      box-shadow: 0 4px 20px var(--gold-glow);
+    }
+
+    /* Popup для подтверждения сделки */
+    .popup-status-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .popup-status-btn {
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease, transform 0.1s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .popup-status-btn:active {
+      transform: scale(0.95);
+    }
+
+    .popup-status-btn.success {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+      color: #0a0a0a;
+      box-shadow: 0 4px 20px var(--gold-glow);
+    }
+
+    .popup-status-btn.success:hover {
+      box-shadow: 0 6px 24px var(--gold-glow);
+      transform: translateY(-1px);
+    }
+
+    .popup-status-btn.failed {
+      background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(248, 113, 113, 0.4);
+    }
+
+    .popup-status-btn.failed:hover {
+      box-shadow: 0 6px 24px rgba(248, 113, 113, 0.5);
+      transform: translateY(-1px);
+    }
+
+    /* Popup для удаления сделки */
+    .popup-delete-warning {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .popup-delete-confirm {
+      background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+      color: #fff;
+    }
+
+    .popup-delete-confirm:hover {
+      box-shadow: 0 4px 20px rgba(248, 113, 113, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <!-- App -->
+  <div id="app">
+    <div class="sunrise-bg" aria-hidden="true"></div>
+    <div class="app-content">
+      <div class="golden-label"><span>GOLDEN TRAFF</span></div>
+
+      <div class="dynamic-island">
+        <div class="slider" id="islandSlider"></div>
+        <button type="button" class="tab-btn active" data-tab="sum">Сумма</button>
+        <button type="button" class="tab-btn" data-tab="deals">Сделки</button>
+      </div>
+
+      <!-- Screen: Сумма -->
+      <div class="screen active" id="screen-sum">
+        <div class="sum-hero">
+          <div class="value" id="heroSum">0</div>
+          <div class="currency">₽</div>
+        </div>
+        <div class="sub-tabs">
+          <button type="button" class="sub-tab active" data-period="all">Общий доход</button>
+          <button type="button" class="sub-tab" data-period="month">Месячный</button>
+          <button type="button" class="sub-tab" data-period="day">Дневной</button>
+        </div>
+        <div class="analytics-card">
+          <h3>Расчеты и вычеты</h3>
+          <div class="trend-row">
+            <span class="trend-label">Налоговый вычет (6%)</span>
+            <span class="trend-value" id="deductionTax">—</span>
+          </div>
+          <div class="trend-row">
+            <span class="trend-label">Оплата лидам</span>
+            <span class="trend-value" id="deductionLeads">—</span>
+          </div>
+          <div class="trend-row">
+            <span class="trend-label">Выплата сотрудникам</span>
+            <span class="trend-value" id="deductionEmployees">—</span>
+          </div>
+          <div class="trend-row" style="border-top: 2px solid rgba(212, 175, 55, 0.3); margin-top: 8px; padding-top: 12px;">
+            <span class="trend-label" style="font-weight: 600; color: var(--text);">Итого после вычетов</span>
+            <span class="trend-value" id="deductionFinal" style="font-weight: 700; font-size: 16px;">—</span>
+          </div>
+        </div>
+        <button type="button" class="add-deal-btn" id="communicationBtn" style="margin-top: 16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Коммуникация
+        </button>
+        <div class="communication-menu" id="communicationMenu">
+          <button type="button" class="communication-item" id="createTaskBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            Выдать задание
+          </button>
+          <button type="button" class="communication-item" id="createGoalBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Добавить цель
+          </button>
+          <button type="button" class="communication-item" id="confirmTasksBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            Подтвердить задания
+          </button>
+        </div>
+      </div>
+
+      <!-- Screen: Сделки -->
+      <div class="screen" id="screen-deals">
+        <div class="deals-list" id="dealsList"></div>
+        <button type="button" class="add-deal-btn" id="addDealBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Добавить сделку
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup: добавить сделку -->
+  <div class="popup-overlay" id="addDealPopup">
+    <div class="popup">
+      <h2>Новая сделка</h2>
+      <input type="text" id="dealUsername" placeholder="@username в Telegram" autocomplete="off" maxlength="64">
+      <div class="popup-actions">
+        <button type="button" class="popup-cancel" id="cancelDealBtn">Отмена</button>
+        <button type="button" class="popup-submit" id="submitDealBtn">Добавить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup: подтвердить сделку -->
+  <div class="popup-overlay" id="confirmDealPopup">
+    <div class="popup">
+      <h2>Подтвердить сделку</h2>
+      <div class="popup-status-actions">
+        <button type="button" class="popup-status-btn success" id="successDealBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M20 6L9 17l-5-5"/></svg>
+          Успешно
+        </button>
+        <button type="button" class="popup-status-btn failed" id="failedDealBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Провалено
+        </button>
+      </div>
+      <div class="popup-actions" style="margin-top: 12px;">
+        <button type="button" class="popup-cancel" id="cancelConfirmBtn">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup: удалить сделку -->
+  <div class="popup-overlay" id="deleteDealPopup">
+    <div class="popup">
+      <h2>Удалить сделку?</h2>
+      <div class="popup-delete-warning">Вы уверены, что хотите удалить эту сделку? Это действие нельзя отменить.</div>
+      <div class="popup-actions">
+        <button type="button" class="popup-cancel" id="cancelDeleteBtn">Отмена</button>
+        <button type="button" class="popup-submit popup-delete-confirm" id="confirmDeleteBtn">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup: создать задание -->
+  <div class="popup-overlay" id="createTaskPopup">
+    <div class="popup">
+      <h2>Создать задание</h2>
+      <input type="text" id="taskTitle" placeholder="Название задания" autocomplete="off">
+      <textarea id="taskDescription" placeholder="Описание задания"></textarea>
+      <input type="number" id="taskReward" placeholder="Награда (₽)" autocomplete="off">
+      <div class="popup-actions">
+        <button type="button" class="popup-cancel" id="cancelTaskBtn">Отмена</button>
+        <button type="button" class="popup-submit" id="submitTaskBtn">Создать</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup: создать цель -->
+  <div class="popup-overlay" id="createGoalPopup">
+    <div class="popup">
+      <h2>Добавить еженедельную цель</h2>
+      <textarea id="goalText" placeholder="Текст цели" autocomplete="off"></textarea>
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+        Цель можно добавить в любой день, но нельзя изменить цель на срок недели. Она будет видна всем пользователям команды.
+      </div>
+      <div class="popup-actions">
+        <button type="button" class="popup-cancel" id="cancelGoalBtn">Отмена</button>
+        <button type="button" class="popup-submit" id="submitGoalBtn">Создать</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.BACKEND_URL = 'https://uhbhudbfv-5.onrender.com/';
+    (function() {
+      var base = (window.BACKEND_URL || '').replace(/\/$/, '');
+      window.AdminApi = {
+        getSumData: function() { return fetch(base + '/api/sum').then(function(r) { return r.json(); }); },
+        getDeals: function() { return fetch(base + '/api/deals').then(function(r) { return r.json(); }); },
+        addDeal: function(username, amount, userId, avatar, createdBy) {
+          var name = String(username || '').trim().replace(/^@/, '') || 'user';
+          return fetch(base + '/api/deals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              username: name, 
+              amount: amount || 9500,
+              appType: 'admin',
+              userId: userId || null,
+              avatar: avatar || null,
+              createdBy: createdBy || name
+            })
+          }).then(function(r) { return r.json(); });
+        },
+        updateDealStatus: function(dealId, status) {
+          return fetch(base + '/api/deals/' + dealId, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: status })
+          }).then(function(r) { return r.json(); });
+        },
+        deleteDeal: function(dealId) {
+          return fetch(base + '/api/deals/' + dealId, {
+            method: 'DELETE'
+          }).then(function(r) { return r.json(); });
+        },
+        saveUser: function(userId, username, avatar) {
+          return fetch(base + '/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: userId, username: username, avatar: avatar })
+          }).then(function(r) { return r.json(); });
+        },
+        createTask: function(title, description, reward) {
+          return fetch(base + '/api/tasks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: title,
+              description: description,
+              reward: reward,
+              isAdmin: true
+            })
+          }).then(function(r) { return r.json(); });
+        },
+        createGoal: function(text) {
+          return fetch(base + '/api/goal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: text,
+              isAdmin: true
+            })
+          }).then(function(r) { return r.json(); });
+        },
+        getTasks: function() {
+          return fetch(base + '/api/tasks').then(function(r) { return r.json(); });
+        },
+        confirmTask: function(taskId, userId) {
+          return fetch(base + '/api/tasks/' + taskId + '/confirm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: userId,
+              isAdmin: true
+            })
+          }).then(function(r) { return r.json(); });
+        },
+        rejectTask: function(taskId, userId) {
+          return fetch(base + '/api/tasks/' + taskId + '/reject', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: userId,
+              isAdmin: true
+            })
+          }).then(function(r) { return r.json(); });
+        }
+      };
+    })();
+  </script>
+  <script>
+    (function() {
+      const DEAL_AMOUNT = 9500;
+
+      const app = document.getElementById('app');
+      const islandSlider = document.getElementById('islandSlider');
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const screenSum = document.getElementById('screen-sum');
+      const screenDeals = document.getElementById('screen-deals');
+      const heroSum = document.getElementById('heroSum');
+      const subTabs = document.querySelectorAll('.sub-tab');
+      const dealsList = document.getElementById('dealsList');
+      const addDealBtn = document.getElementById('addDealBtn');
+      const addDealPopup = document.getElementById('addDealPopup');
+      const dealUsername = document.getElementById('dealUsername');
+      const cancelDealBtn = document.getElementById('cancelDealBtn');
+      const submitDealBtn = document.getElementById('submitDealBtn');
+      const deductionTax = document.getElementById('deductionTax');
+      const deductionLeads = document.getElementById('deductionLeads');
+      const deductionEmployees = document.getElementById('deductionEmployees');
+      const deductionFinal = document.getElementById('deductionFinal');
+      const confirmDealPopup = document.getElementById('confirmDealPopup');
+      const deleteDealPopup = document.getElementById('deleteDealPopup');
+      const successDealBtn = document.getElementById('successDealBtn');
+      const failedDealBtn = document.getElementById('failedDealBtn');
+      const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+      const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+      const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+      const communicationBtn = document.getElementById('communicationBtn');
+      const communicationMenu = document.getElementById('communicationMenu');
+      const createTaskBtn = document.getElementById('createTaskBtn');
+      const createTaskPopup = document.getElementById('createTaskPopup');
+      const taskTitle = document.getElementById('taskTitle');
+      const taskDescription = document.getElementById('taskDescription');
+      const taskReward = document.getElementById('taskReward');
+      const cancelTaskBtn = document.getElementById('cancelTaskBtn');
+      const submitTaskBtn = document.getElementById('submitTaskBtn');
+      const createGoalBtn = document.getElementById('createGoalBtn');
+      const createGoalPopup = document.getElementById('createGoalPopup');
+      const goalText = document.getElementById('goalText');
+      const cancelGoalBtn = document.getElementById('cancelGoalBtn');
+      const submitGoalBtn = document.getElementById('submitGoalBtn');
+      const confirmTasksBtn = document.getElementById('confirmTasksBtn');
+
+      // Функция вибрации (без звука)
+      function vibrate(duration) {
+        var vibrateDuration = duration || 50;
+        
+        // Метод 1: Telegram WebApp API (работает на iOS в Telegram)
+        if (window.Telegram && window.Telegram.WebApp) {
+          try {
+            if (window.Telegram.WebApp.HapticFeedback) {
+              window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            }
+          } catch (e) {}
+        }
+        
+        // Метод 2: Taptic Engine для iOS (если доступен через WebView)
+        if (window.TapticEngine) {
+          try {
+            window.TapticEngine.impact({ style: 'medium' });
+          } catch (e) {}
+        }
+        
+        // Метод 3: Стандартный vibrate API (работает на Android)
+        if (navigator && navigator.vibrate) {
+          try {
+            navigator.vibrate(vibrateDuration);
+          } catch (e) {}
+        }
+      }
+
+      // Добавить тактильную обратную связь на все кнопки (звук + визуальная)
+      document.addEventListener('touchstart', function(e) {
+        var target = e.target;
+        var button = target.closest('button');
+        if (button && button.tagName === 'BUTTON') {
+          // Звуковая обратная связь (работает на всех устройствах)
+          vibrate(50);
+          // Визуальная обратная связь (масштабирование кнопки)
+          button.style.transform = 'scale(0.95)';
+          button.style.transition = 'transform 0.1s ease';
+        }
+      }, { passive: true });
+
+      document.addEventListener('touchend', function(e) {
+        var target = e.target;
+        var button = target.closest('button');
+        if (button && button.tagName === 'BUTTON') {
+          setTimeout(function() {
+            button.style.transform = '';
+          }, 100);
+        }
+      }, { passive: true });
+
+      document.addEventListener('click', function(e) {
+        var target = e.target;
+        var button = target.closest('button');
+        if (button && button.tagName === 'BUTTON') {
+          // Звуковая обратная связь (на случай если touchstart не сработал)
+          vibrate(50);
+          // Визуальная обратная связь
+          button.style.transform = 'scale(0.95)';
+          button.style.transition = 'transform 0.1s ease';
+          setTimeout(function() {
+            button.style.transform = '';
+          }, 100);
+        }
+      }, true);
+
+      // Получаем данные пользователя из Telegram (как в общем приложении)
+      let currentUser = {
+        id: null,
+        username: 'admin',
+        firstName: 'Админ',
+        lastName: '',
+        avatar: null
+      };
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+        const user = window.Telegram.WebApp.initDataUnsafe.user;
+        currentUser.id = user.id;
+        currentUser.username = user.username || 'admin';
+        currentUser.firstName = user.first_name || 'Админ';
+        currentUser.lastName = user.last_name || '';
+        currentUser.avatar = user.photo_url || null;
+        console.log('✅ Данные пользователя получены из Telegram:', currentUser);
+      }
+
+      // Сохраняем ID админа и данные пользователя при загрузке (как в общем приложении)
+      function registerAdminId() {
+        if (!currentUser.id) {
+          console.log('⚠️ ID пользователя не найден, повторная попытка через 1 секунду...');
+          setTimeout(registerAdminId, 1000);
+          return;
+        }
+
+        const backendUrl = (window.BACKEND_URL || '').replace(/\/$/, '');
+        
+        // 1. Сохраняем ID админа через /api/admin/set-id
+        const adminUrl = backendUrl + '/api/admin/set-id';
+        console.log('📤 Сохранение ID админа на сервер:', currentUser.id);
+        
+        fetch(adminUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: String(currentUser.id) })
+        }).then(function(response) {
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+          }
+          return response.json();
+        }).then(function(data) {
+          console.log('✅ ID админа успешно сохранен:', data);
+          // Сохраняем в localStorage для использования при создании сделок
+          if (currentUser.id) {
+            localStorage.setItem('adminUserId', String(currentUser.id));
+          }
+        }).catch(function(err) {
+          console.error('❌ Ошибка сохранения ID админа:', err);
+          // Повторная попытка через 3 секунды
+          setTimeout(registerAdminId, 3000);
+        });
+
+        // 2. Сохраняем данные пользователя через /api/users (для уведомлений)
+        var api = window.AdminApi;
+        if (api && currentUser.id) {
+          api.saveUser(currentUser.id, currentUser.username, currentUser.avatar).then(function() {
+            console.log('✅ Данные пользователя сохранены для уведомлений');
+          }).catch(function(err) {
+            console.error('❌ Ошибка сохранения данных пользователя:', err);
+          });
+        }
+      }
+
+      // Регистрируем админа при загрузке
+      setTimeout(registerAdminId, 500);
+
+      // Инициализация приложения
+      app.classList.add('visible');
+      loadData();
+      
+      // Переменная для отслеживания предыдущего состояния уведомлений
+      var previousNotificationState = false;
+      
+      // Проверяем новые задания при загрузке
+      setTimeout(function() {
+        updateAdminTaskNotification();
+        // Периодически проверяем новые задания (каждые 10 секунд для быстрой реакции)
+        setInterval(function() {
+          var hadNotification = previousNotificationState;
+          updateAdminTaskNotification();
+          // Если появилось новое уведомление, показываем alert через Telegram WebApp
+          if (!hadNotification && previousNotificationState) {
+            showTelegramNotification('📋 Новое задание на подтверждение!');
+          }
+        }, 10000); // Каждые 10 секунд
+      }, 1000);
+      
+      // Функция для показа уведомления через Telegram WebApp API
+      function showTelegramNotification(message) {
+        // Используем Telegram WebApp API для показа уведомления
+        if (window.Telegram && window.Telegram.WebApp) {
+          try {
+            // Показываем всплывающее уведомление
+            if (window.Telegram.WebApp.showAlert) {
+              window.Telegram.WebApp.showAlert(message);
+            } else if (window.Telegram.WebApp.showPopup) {
+              window.Telegram.WebApp.showPopup({
+                title: 'Новое уведомление',
+                message: message,
+                buttons: [{ type: 'ok', text: 'Понятно' }]
+              });
+            }
+            
+            // Вибрация для привлечения внимания
+            if (window.Telegram.WebApp.HapticFeedback) {
+              window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            }
+            
+            vibrate(100);
+          } catch (e) {
+            console.error('Ошибка показа уведомления через Telegram WebApp:', e);
+            // Fallback: обычный alert
+            alert(message);
+          }
+        } else {
+          // Fallback: обычный alert если WebApp API недоступен
+          alert(message);
+          vibrate(100);
+        }
+      }
+
+      function loadData() {
+        var api = window.AdminApi;
+        var emptyData = { 
+          total: 0, month: 0, day: 0,
+          totalTax: 0, totalLeads: 0, totalEmployees: 0, totalFinal: 0,
+          monthTax: 0, monthLeads: 0, monthEmployees: 0, monthFinal: 0,
+          dayTax: 0, dayLeads: 0, dayEmployees: 0, dayFinal: 0
+        };
+        if (!api) {
+          applySumData(emptyData);
+          applyDealsList([]);
+          return;
+        }
+        Promise.all([api.getSumData(), api.getDeals()]).then(function(arr) {
+          requestAnimationFrame(function() {
+            applySumData(arr[0]);
+            applyDealsList(arr[1] || []);
+          });
+        }).catch(function() {
+          requestAnimationFrame(function() {
+            applySumData(emptyData);
+            applyDealsList([]);
+          });
+        });
+      }
+
+      // Dynamic Island: переливание
+      let currentTab = 'sum';
+      tabBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const tab = this.dataset.tab;
+          if (tab === currentTab) return;
+          currentTab = tab;
+          islandSlider.classList.toggle('to-right', tab === 'deals');
+          tabBtns.forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tab); });
+          screenSum.classList.toggle('active', tab === 'sum');
+          screenDeals.classList.toggle('active', tab === 'deals');
+          if (tab === 'sum') loadData();
+          if (tab === 'deals') loadData();
+        });
+      });
+
+      // Sub-tabs (period)
+      let currentPeriod = 'all';
+      subTabs.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          currentPeriod = this.dataset.period;
+          subTabs.forEach(function(b) { b.classList.toggle('active', b.dataset.period === currentPeriod); });
+          loadData();
+        });
+      });
+
+      function applySumData(data) {
+        data = data || { 
+          total: 0, month: 0, day: 0,
+          totalTax: 0, totalLeads: 0, totalEmployees: 0, totalFinal: 0,
+          monthTax: 0, monthLeads: 0, monthEmployees: 0, monthFinal: 0,
+          dayTax: 0, dayLeads: 0, dayEmployees: 0, dayFinal: 0
+        };
+        var display = currentPeriod === 'all' ? data.total : currentPeriod === 'month' ? data.month : data.day;
+        heroSum.textContent = formatMoney(display);
+        
+        // Вычеты в зависимости от периода
+        var tax, leads, employees, final;
+        if (currentPeriod === 'all') {
+          tax = data.totalTax || 0;
+          leads = data.totalLeads || 0;
+          employees = data.totalEmployees || 0;
+          final = data.totalFinal || 0;
+        } else if (currentPeriod === 'month') {
+          tax = data.monthTax || 0;
+          leads = data.monthLeads || 0;
+          employees = data.monthEmployees || 0;
+          final = data.monthFinal || 0;
+        } else {
+          tax = data.dayTax || 0;
+          leads = data.dayLeads || 0;
+          employees = data.dayEmployees || 0;
+          final = data.dayFinal || 0;
+        }
+        
+        deductionTax.textContent = formatMoney(tax) + ' ₽';
+        deductionLeads.textContent = formatMoney(leads) + ' ₽';
+        deductionEmployees.textContent = formatMoney(employees) + ' ₽';
+        deductionFinal.textContent = formatMoney(final) + ' ₽';
+      }
+
+      function formatMoney(n) {
+        return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
+      }
+
+
+      let currentDealId = null;
+
+      function applyDealsList(list) {
+        list = list || [];
+        dealsList.innerHTML = list.length
+          ? list.map(function(d) {
+              var sum = d.amount || DEAL_AMOUNT;
+              var status = d.status || 'pending';
+              var statusIndicator = '';
+              if (status === 'success') {
+                statusIndicator = '<div class="deal-status-indicator success"></div>';
+              } else if (status === 'failed') {
+                statusIndicator = '<div class="deal-status-indicator failed"></div>';
+              }
+              var displayText = escapeHtml(d.username || 'неизвестный');
+              if (d.createdBy && d.createdBy !== d.username) {
+                displayText = escapeHtml(d.createdBy) + ' → ' + escapeHtml(d.username || 'неизвестный');
+              }
+              
+              // Форматируем дату создания сделки (формат: 26.02.26)
+              var dealDate = d.date ? new Date(d.date) : new Date();
+              var day = String(dealDate.getDate()).padStart(2, '0');
+              var month = String(dealDate.getMonth() + 1).padStart(2, '0');
+              var year = String(dealDate.getFullYear()).slice(-2);
+              var dateStr = day + '.' + month + '.' + year;
+              
+              return '<div class="deal-card" data-deal-id="' + escapeHtml(d.id) + '" data-deal-status="' + status + '">' + statusIndicator + '<div style="flex: 1; display: flex; flex-direction: column; gap: 2px;"><div class="deal-user">' + displayText + ' <span>TG</span></div><div class="deal-date" style="font-size: 11px; color: var(--text-muted);">' + dateStr + '</div></div><div class="deal-sum">' + formatMoney(sum) + ' ₽</div></div>';
+            }).join('')
+          : '<p style="text-align:center;color:var(--text-muted);padding:24px;font-size:14px;">Пока сделок нет. Добавьте первую.</p>';
+        
+        // Добавить обработчики кликов на сделки
+        const dealCards = document.querySelectorAll('.deal-card[data-deal-id]');
+        dealCards.forEach(function(card) {
+          card.addEventListener('click', function() {
+            var dealId = this.dataset.dealId;
+            var status = this.dataset.dealStatus;
+            currentDealId = dealId;
+            
+            if (status === 'pending') {
+              confirmDealPopup.classList.add('visible');
+            } else {
+              deleteDealPopup.classList.add('visible');
+            }
+          });
+        });
+      }
+
+      function escapeHtml(s) {
+        var div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
+      addDealBtn.addEventListener('click', function() {
+        dealUsername.value = '';
+        addDealPopup.classList.add('visible');
+        setTimeout(function() { dealUsername.focus(); }, 300);
+      });
+
+      cancelDealBtn.addEventListener('click', closePopup);
+      addDealPopup.addEventListener('click', function(e) {
+        if (e.target === addDealPopup) closePopup();
+      });
+
+      function closePopup() {
+        addDealPopup.classList.remove('visible');
+      }
+
+      submitDealBtn.addEventListener('click', function() {
+        var username = (dealUsername.value || '').trim().replace(/^@/, '');
+        if (!username) return;
+        var api = window.AdminApi;
+        if (!api) { closePopup(); return; }
+        
+        // Закрываем попап сразу, чтобы предотвратить двойной клик
+        closePopup();
+        
+        // Получаем userId - если currentUser.id не установлен, пытаемся получить из localStorage или используем null
+        var userId = currentUser.id;
+        if (!userId) {
+          // Пытаемся получить из localStorage (если был сохранен ранее)
+          var savedAdminId = localStorage.getItem('adminUserId');
+          if (savedAdminId) {
+            userId = savedAdminId;
+            console.log('📝 Используем сохраненный adminUserId из localStorage:', userId);
+          } else {
+            console.warn('⚠️ currentUser.id не установлен, напоминание не будет отправлено');
+          }
+        }
+        
+        console.log('📤 Создание сделки с userId:', userId, 'username:', username);
+        
+        // Передаем userId, avatar и createdBy для напоминаний
+        api.addDeal(username, DEAL_AMOUNT, userId, currentUser.avatar || null, currentUser.firstName || 'Админ').then(function() {
+          currentTab = 'deals';
+          islandSlider.classList.add('to-right');
+          tabBtns.forEach(function(b) { b.classList.toggle('active', b.dataset.tab === 'deals'); });
+          screenSum.classList.remove('active');
+          screenDeals.classList.add('active');
+          loadData();
+        }).catch(function(err) {
+          console.error('❌ Ошибка создания сделки:', err);
+        });
+      });
+
+      dealUsername.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') submitDealBtn.click();
+      });
+
+      // Обработчики попапа подтверждения сделки
+      function closeConfirmPopup() {
+        confirmDealPopup.classList.remove('visible');
+        currentDealId = null;
+      }
+
+      cancelConfirmBtn.addEventListener('click', closeConfirmPopup);
+      confirmDealPopup.addEventListener('click', function(e) {
+        if (e.target === confirmDealPopup) {
+          closeConfirmPopup();
+        }
+      });
+
+      successDealBtn.addEventListener('click', function() {
+        if (!currentDealId) return;
+        var api = window.AdminApi;
+        if (!api) { closeConfirmPopup(); return; }
+        api.updateDealStatus(currentDealId, 'success').then(function() {
+          closeConfirmPopup();
+          loadData();
+        }).catch(function() {});
+      });
+
+      failedDealBtn.addEventListener('click', function() {
+        if (!currentDealId) return;
+        var api = window.AdminApi;
+        if (!api) { closeConfirmPopup(); return; }
+        api.updateDealStatus(currentDealId, 'failed').then(function() {
+          closeConfirmPopup();
+          loadData();
+        }).catch(function() {});
+      });
+
+      // Обработчики попапа удаления сделки
+      function closeDeletePopup() {
+        deleteDealPopup.classList.remove('visible');
+        currentDealId = null;
+      }
+
+      cancelDeleteBtn.addEventListener('click', closeDeletePopup);
+      deleteDealPopup.addEventListener('click', function(e) {
+        if (e.target === deleteDealPopup) {
+          closeDeletePopup();
+        }
+      });
+
+      confirmDeleteBtn.addEventListener('click', function() {
+        if (!currentDealId) return;
+        var api = window.AdminApi;
+        if (!api) { closeDeletePopup(); return; }
+        api.deleteDeal(currentDealId).then(function() {
+          closeDeletePopup();
+          loadData();
+        }).catch(function() {});
+      });
+
+      // Функция для сохранения просмотренных заданий (админ)
+      function markAdminTasksAsViewed() {
+        fetch((window.BACKEND_URL || '').replace(/\/$/, '') + '/api/admin/tasks').then(function(r) {
+          return r.json();
+        }).then(function(tasks) {
+          var tasksWithPending = tasks.filter(function(task) {
+            return task.pendingCompletions && task.pendingCompletions.length > 0;
+          });
+          var taskIds = tasksWithPending.map(function(t) { return t.id; });
+          localStorage.setItem('viewedAdminTasks', JSON.stringify(taskIds));
+          updateAdminTaskNotification();
+        }).catch(function(err) {
+          console.error('Ошибка загрузки заданий:', err);
+        });
+      }
+
+      // Функция для обновления индикатора уведомлений (админ)
+      function updateAdminTaskNotification() {
+        if (!communicationBtn) return;
+        
+        fetch((window.BACKEND_URL || '').replace(/\/$/, '') + '/api/admin/tasks').then(function(r) {
+          return r.json();
+        }).then(function(tasks) {
+          var tasksWithPending = tasks.filter(function(task) {
+            return task.pendingCompletions && task.pendingCompletions.length > 0;
+          });
+          
+          var viewedTasks = localStorage.getItem('viewedAdminTasks');
+          var viewed = viewedTasks ? JSON.parse(viewedTasks) : [];
+          
+          var hasNew = tasksWithPending.some(function(task) {
+            return !viewed.includes(task.id);
+          });
+          
+          // Обновляем состояние уведомлений
+          var notificationStateChanged = previousNotificationState !== hasNew;
+          previousNotificationState = hasNew;
+          
+          // Добавляем индикатор на кнопку "Коммуникация"
+          if (hasNew) {
+            if (!communicationBtn.querySelector('.notification-badge')) {
+              var badge = document.createElement('div');
+              badge.className = 'notification-badge';
+              communicationBtn.appendChild(badge);
+            }
+          } else {
+            var badge = communicationBtn.querySelector('.notification-badge');
+            if (badge) badge.remove();
+          }
+          
+          // Также обновляем индикатор на кнопке "Подтвердить задания"
+          if (confirmTasksBtn) {
+            if (hasNew) {
+              if (!confirmTasksBtn.querySelector('.notification-badge')) {
+                var badge2 = document.createElement('div');
+                badge2.className = 'notification-badge';
+                confirmTasksBtn.appendChild(badge2);
+              }
+            } else {
+              var badge2 = confirmTasksBtn.querySelector('.notification-badge');
+              if (badge2) badge2.remove();
+            }
+          }
+          
+          // Если появилось новое уведомление и приложение активно, показываем уведомление
+          if (hasNew && notificationStateChanged && document.visibilityState === 'visible') {
+            var newTasksCount = tasksWithPending.filter(function(task) {
+              return !viewed.includes(task.id);
+            }).length;
+            
+            var message = newTasksCount === 1 
+              ? '📋 Новое задание на подтверждение!'
+              : '📋 ' + newTasksCount + ' новых заданий на подтверждение!';
+            
+            showTelegramNotification(message);
+          }
+        }).catch(function(err) {
+          console.error('Ошибка проверки заданий:', err);
+        });
+      }
+
+      // Обработчик кнопки "Коммуникация"
+      if (communicationBtn && communicationMenu) {
+        communicationBtn.addEventListener('click', function() {
+          communicationMenu.classList.toggle('expanded');
+          vibrate(30);
+          
+          // Если меню открывается, отмечаем задания как просмотренные и убираем индикатор
+          if (communicationMenu.classList.contains('expanded')) {
+            markAdminTasksAsViewed();
+          }
+        });
+      }
+
+      // Обработчики попапа создания задания
+      if (createTaskBtn) {
+        createTaskBtn.addEventListener('click', function() {
+          if (communicationMenu) communicationMenu.classList.remove('expanded');
+          taskTitle.value = '';
+          taskDescription.value = '';
+          taskReward.value = '';
+          createTaskPopup.classList.add('visible');
+          setTimeout(function() { taskTitle.focus(); }, 300);
+        });
+      }
+
+      cancelTaskBtn.addEventListener('click', function() {
+        createTaskPopup.classList.remove('visible');
+      });
+
+      createTaskPopup.addEventListener('click', function(e) {
+        if (e.target === createTaskPopup) {
+          createTaskPopup.classList.remove('visible');
+        }
+      });
+
+      submitTaskBtn.addEventListener('click', function() {
+        var title = (taskTitle.value || '').trim();
+        var description = (taskDescription.value || '').trim();
+        var reward = parseInt(taskReward.value) || 0;
+        
+        if (!title || !description || !reward) {
+          return;
+        }
+        
+        var api = window.AdminApi;
+        if (!api) {
+          createTaskPopup.classList.remove('visible');
+          return;
+        }
+        
+        api.createTask(title, description, reward).then(function() {
+          createTaskPopup.classList.remove('visible');
+          taskTitle.value = '';
+          taskDescription.value = '';
+          taskReward.value = '';
+        }).catch(function(err) {
+          console.error('Ошибка создания задания:', err);
+        });
+      });
+
+      // Обработчики попапа создания цели
+      if (createGoalBtn) {
+        createGoalBtn.addEventListener('click', function() {
+          if (communicationMenu) communicationMenu.classList.remove('expanded');
+          goalText.value = '';
+          createGoalPopup.classList.add('visible');
+          setTimeout(function() { goalText.focus(); }, 300);
+        });
+      }
+
+      cancelGoalBtn.addEventListener('click', function() {
+        createGoalPopup.classList.remove('visible');
+      });
+
+      createGoalPopup.addEventListener('click', function(e) {
+        if (e.target === createGoalPopup) {
+          createGoalPopup.classList.remove('visible');
+        }
+      });
+
+      submitGoalBtn.addEventListener('click', function() {
+        var text = (goalText.value || '').trim();
+        
+        if (!text) {
+          return;
+        }
+        
+        var api = window.AdminApi;
+        if (!api) {
+          createGoalPopup.classList.remove('visible');
+          return;
+        }
+        
+        api.createGoal(text).then(function(result) {
+          if (result.error) {
+            alert(result.error);
+          } else {
+            createGoalPopup.classList.remove('visible');
+            goalText.value = '';
+          }
+        }).catch(function(err) {
+          console.error('Ошибка создания цели:', err);
+          alert('Ошибка создания цели. Проверьте, что сегодня понедельник и цель на эту неделю еще не создана.');
+        });
+      });
+
+      // Обработчик кнопки подтверждения заданий
+      if (confirmTasksBtn) {
+        confirmTasksBtn.addEventListener('click', function() {
+          if (communicationMenu) communicationMenu.classList.remove('expanded');
+          showConfirmTasksPopup();
+        });
+      }
+
+      // Попап для подтверждения заданий
+      var confirmTasksPopup = document.createElement('div');
+      confirmTasksPopup.className = 'popup-overlay';
+      confirmTasksPopup.id = 'confirmTasksPopup';
+      confirmTasksPopup.innerHTML = '<div class="popup"><h2>Задания на подтверждение</h2><div id="confirmTasksList"></div><div class="popup-actions" style="margin-top: 12px;"><button type="button" class="popup-cancel" id="closeConfirmTasksBtn">Закрыть</button></div></div>';
+      document.body.appendChild(confirmTasksPopup);
+
+      function showConfirmTasksPopup() {
+        var api = window.AdminApi;
+        if (!api) return;
+        
+        fetch((window.BACKEND_URL || '').replace(/\/$/, '') + '/api/admin/tasks').then(function(r) {
+          return r.json();
+        }).then(function(tasks) {
+          var tasksWithPending = tasks.filter(function(task) {
+            return task.pendingCompletions && task.pendingCompletions.length > 0;
+          });
+          
+          // Отмечаем задания как просмотренные при открытии попапа
+          markAdminTasksAsViewed();
+          
+          var list = document.getElementById('confirmTasksList');
+          if (!list) return;
+          
+          if (tasksWithPending.length === 0) {
+            list.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:24px;font-size:14px;">Нет заданий на подтверждение</p>';
+          } else {
+            list.innerHTML = tasksWithPending.map(function(task) {
+              return task.pendingCompletions.map(function(pending) {
+                var completedDate = new Date(pending.completedAt);
+                var timeStr = completedDate.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+                
+                return '<div class="task-item" style="margin-bottom: 16px;">' +
+                  '<div class="task-title">' + escapeHtml(task.title) + '</div>' +
+                  '<div class="task-description">Пользователь: ' + escapeHtml(pending.username) + '</div>' +
+                  '<div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Выполнено: ' + timeStr + '</div>' +
+                  '<div class="task-reward">Награда: ' + formatMoney(task.reward || 0) + ' ₽</div>' +
+                  '<div class="popup-actions" style="margin-top: 12px;">' +
+                    '<button class="popup-cancel" data-task-id="' + escapeHtml(task.id) + '" data-user-id="' + escapeHtml(pending.userId) + '" data-action="reject">Отклонить</button>' +
+                    '<button class="popup-submit" data-task-id="' + escapeHtml(task.id) + '" data-user-id="' + escapeHtml(pending.userId) + '" data-action="confirm">Подтвердить</button>' +
+                  '</div>' +
+                '</div>';
+              }).join('');
+            }).join('');
+            
+            // Добавляем обработчики
+            list.querySelectorAll('[data-action="confirm"]').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var taskId = this.dataset.taskId;
+                var userId = this.dataset.userId;
+                api.confirmTask(taskId, userId).then(function() {
+                  showConfirmTasksPopup();
+                  loadData();
+                }).catch(function(err) {
+                  console.error('Ошибка подтверждения задания:', err);
+                });
+              });
+            });
+            
+            list.querySelectorAll('[data-action="reject"]').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var taskId = this.dataset.taskId;
+                var userId = this.dataset.userId;
+                api.rejectTask(taskId, userId).then(function() {
+                  showConfirmTasksPopup();
+                }).catch(function(err) {
+                  console.error('Ошибка отклонения задания:', err);
+                });
+              });
+            });
+          }
+          
+          confirmTasksPopup.classList.add('visible');
+        }).catch(function(err) {
+          console.error('Ошибка загрузки заданий:', err);
+        });
+      }
+
+      document.getElementById('closeConfirmTasksBtn')?.addEventListener('click', function() {
+        confirmTasksPopup.classList.remove('visible');
+      });
+
+      confirmTasksPopup.addEventListener('click', function(e) {
+        if (e.target === confirmTasksPopup) {
+          confirmTasksPopup.classList.remove('visible');
+        }
+      });
+
+      window.AdminRefreshSum = loadData;
+      window.AdminRefreshDeals = loadData;
+    })();
+  </script>
+</body>
+</html>
